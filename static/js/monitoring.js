@@ -9,7 +9,7 @@ function populateMemoryData(data, element) {
     var table_body = '<table class="table table-bordered table-small">';
     $.each(data, function (k, v) {
         table_body += '<tr>';
-        table_body += '<td>';
+        table_body += '<td class="font-weight-bold">';
         table_body += titleCase(k);
         table_body += '</td>';
         table_body += '<td>';
@@ -21,10 +21,38 @@ function populateMemoryData(data, element) {
     elem.html(table_body);
 }
 
+function populateNetworkData(data, element) {
+    let elem = $(element);
+    let table_body = '<table class="table table-bordered table-small">';
+    let data_length = Object.keys(data).length;
+    $.each(data, function (key, value) {
+        table_body += '<td class="font-weight-bold" colspan="' + data_length + '">';
+        table_body += key;
+        table_body += '</td>';
+        $.each(value, function (k, v) {
+            table_body += '<tr>';
+            table_body += '<td class="font-weight-bold">';
+            table_body += titleCase(k);
+            table_body += '</td>';
+            table_body += '<td>';
+            table_body += v;
+            table_body += '</td>';
+            table_body += '</tr>';
+        });
+    });
+    table_body += '</table>';
+    elem.html(table_body);
+}
+
 $(function () {
-    let url = '/monitoring/get-monitoring-data/memory/';
-    $.get(url, function (data) {
+    let memory_url = '/get-monitoring-data/memory/';
+    $.get(memory_url, function (data) {
         populateMemoryData(data, '#memory');
+    }, "json");
+
+    let network_url = '/get-monitoring-data/network/';
+    $.get(network_url, function (data) {
+        populateNetworkData(data, '#network');
     }, "json");
 });
 

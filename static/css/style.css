@@ -1,7 +1,12 @@
 body {
     overflow-x: hidden;
+    font-size: 16px;
 }
 
 .table-small td {
     padding: 2px 5px;
+}
+
+.table-small {
+    font-size: 14px;
 }

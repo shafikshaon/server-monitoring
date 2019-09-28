@@ -3,7 +3,7 @@ import os
 from django.http import JsonResponse
 
 
-def get_main_memory_swap_memory(d):
+def get_main_memory_swap_memory(args):
     """
     Get mail memory usage
     Fet swap memory usage
@@ -48,6 +48,59 @@ def get_main_memory_swap_memory(d):
         }
 
         data = memory_dict
+
+    except Exception as err:
+        data = str(err)
+
+    return JsonResponse(data, safe=True)
+
+
+def get_network_information(args):
+    """
+    Get the Network Information
+    """
+    data = []
+    try:
+        network_interface = os.popen("ip addr | grep LOWER_UP | awk '{print $2}'")
+        iface = network_interface.read().strip().replace(':', '').split('\n')
+        network_interface.close()
+        # del iface[0]
+
+        for i_name in iface:
+            network = os.popen("ip addr show " + i_name + "| awk '{if ($2 == \"forever\"){!$2} else {print $2}}'")
+            network_data = network.read().strip().split('\n')
+            network.close()
+            if len(network_data) == 2:
+                network_data.append('unavailable')
+            if len(network_data) == 3:
+                network_data.append('unavailable')
+            data.append(network_data)
+
+        networks_data = {}
+        for d in data:
+            if len(d) <= 4:
+                ips = {
+                    d[0]: {
+                        'interface': d[0],
+                        'mac_address': d[1],
+                        'ipv4': d[2],
+                        'ipv6': d[3],
+                    }
+                }
+                networks_data.update(ips)
+
+            if len(d) >= 5:
+                ips = {
+                    d[0]: {
+                        'interface': d[0],
+                        'mac_address': d[1],
+                        'ipv4': d[2],
+                        'ipv6': d[4],
+                    }
+                }
+                networks_data.update(ips)
+
+        data = networks_data
 
     except Exception as err:
         data = str(err)
