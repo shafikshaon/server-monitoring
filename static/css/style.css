@@ -2,34 +2,6 @@ body {
     overflow-x: hidden;
 }
 
-.scroll-nav {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    z-index: 999;
-    background: #17a2b8;
-    color: #fff;
-    transition: all 0.3s;
-}
-
-.scroll-nav__link {
-    color: #fff;
-}
-
-.scroll-nav__item a:hover {
-    text-decoration: none;
-  color: #fff3cd;
-}
-
-.scroll-nav__item--active {
-    font-weight: 700;
-    position: relative;
-}
-
-.scroll-nav__item--active:before {
-    content: '';
-    display: block;
-    position: absolute;
-    left: -20px;
-    top: 2px;
+.table-small td {
+    padding: 2px 5px;
 }
