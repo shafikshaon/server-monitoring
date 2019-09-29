@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 from django.http import JsonResponse
 
@@ -101,6 +102,66 @@ def get_network_information(args):
                 networks_data.update(ips)
 
         data = networks_data
+
+    except Exception as err:
+        data = str(err)
+
+    return JsonResponse(data, safe=True)
+
+
+def get_uptime(args):
+    """
+    Get uptime
+    """
+    try:
+        uptime = os.popen("uptime -s")
+        uptime_data = uptime.read().strip().split()
+        uptime.close()
+
+        uptime_human_readable = os.popen("uptime -p")
+        uptime_human_readable_data = uptime_human_readable.read().strip()
+        uptime_human_readable.close()
+
+        uptime_data_dict = {}
+        uptime_data_dict.update({
+            'last_boot_on': uptime_data[0] + " at " + uptime_data[1],
+            'up_till_time': uptime_human_readable_data
+        })
+
+        data = uptime_data_dict
+
+    except Exception as err:
+        data = str(err)
+
+    return JsonResponse(data, safe=True)
+
+
+def get_traffic(args):
+    """
+    Get the traffic for the specified interface
+    """
+    try:
+        network_interface = os.popen("ip addr | grep LOWER_UP | awk '{print $2}'")
+        iface = network_interface.read().strip().replace(':', '').split('\n')
+        network_interface.close()
+        del iface[0]
+        pipe = os.popen("cat /proc/net/dev |" + "grep " + iface[0] + "| awk '{print $1, $9}'")
+        data = pipe.read().strip().split(':', 1)[-1]
+        pipe.close()
+
+        if not data[0].isdigit():
+            pipe = os.popen("cat /proc/net/dev |" + "grep " + iface[0] + "| awk '{print $2, $10}'")
+            data = pipe.read().strip().split(':', 1)[-1]
+            pipe.close()
+
+        data = data.split()
+
+        traffic_in = int(data[0])
+        traffic_out = int(data[1])
+
+        all_traffic = {'traffic_in': traffic_in/1048576, 'traffic_out': traffic_out/1048576}
+
+        data = all_traffic
 
     except Exception as err:
         data = str(err)

@@ -4,7 +4,7 @@ function titleCase(str) {
     }).join(' ');
 }
 
-function populateMemoryData(data, element) {
+function populateData(data, element) {
     let elem = $(element);
     var table_body = '<table class="table table-bordered table-small">';
     $.each(data, function (k, v) {
@@ -13,7 +13,7 @@ function populateMemoryData(data, element) {
         table_body += titleCase(k);
         table_body += '</td>';
         table_body += '<td>';
-        table_body += v + ' MB';
+        table_body += v;
         table_body += '</td>';
         table_body += '</tr>';
     });
@@ -47,12 +47,22 @@ function populateNetworkData(data, element) {
 $(function () {
     let memory_url = '/get-monitoring-data/memory/';
     $.get(memory_url, function (data) {
-        populateMemoryData(data, '#memory');
+        populateData(data, '#memory');
     }, "json");
 
     let network_url = '/get-monitoring-data/network/';
     $.get(network_url, function (data) {
         populateNetworkData(data, '#network');
+    }, "json");
+
+    let uptime_url = '/get-monitoring-data/uptime/';
+    $.get(uptime_url, function (data) {
+        populateData(data, '#uptime');
+    }, "json");
+
+    let traffic_url = '/get-monitoring-data/traffic/';
+    $.get(traffic_url, function (data) {
+        populateData(data, '#traffic');
     }, "json");
 });
 
