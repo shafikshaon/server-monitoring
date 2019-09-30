@@ -44,6 +44,29 @@ function populateNetworkData(data, element) {
     elem.html(table_body);
 }
 
+function populateDiskData(data, element) {
+    let elem = $(element);
+    let table_body = '<table class="table table-bordered table-small">';
+    let data_length = Object.keys(data).length;
+    $.each(data, function (key, value) {
+        table_body += '<td class="font-weight-bold" colspan="' + data_length + '">';
+        table_body += key;
+        table_body += '</td>';
+        $.each(value, function (k, v) {
+            table_body += '<tr>';
+            table_body += '<td class="font-weight-bold">';
+            table_body += titleCase(k);
+            table_body += '</td>';
+            table_body += '<td>';
+            table_body += v;
+            table_body += '</td>';
+            table_body += '</tr>';
+        });
+    });
+    table_body += '</table>';
+    elem.html(table_body);
+}
+
 $(function () {
     let memory_url = '/get-monitoring-data/memory/';
     $.get(memory_url, function (data) {
@@ -68,6 +91,11 @@ $(function () {
     let current_user_url = '/get-monitoring-data/current-user/';
     $.get(current_user_url, function (data) {
         populateData(data, '#current_user');
+    }, "json");
+
+    let disk_url = '/get-monitoring-data/disk/';
+    $.get(disk_url, function (data) {
+        populateDiskData(data, '#disk');
     }, "json");
 });
 

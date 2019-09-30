@@ -189,3 +189,47 @@ def get_current_users(args):
         data = str(err)
 
     return JsonResponse(data, safe=True)
+
+
+def get_disk(args):
+    """
+    Get disk usage
+    Details: https://www.tecmint.com/how-to-check-disk-space-in-linux/
+    """
+    try:
+        disk = os.popen("df -Ph | " + "grep -v Filesystem | " + "awk '{print $1, $2, $3, $4, $5, $6}'")
+        data = disk.read().strip().split('\n')
+        disk.close()
+
+        disk_dict = {}
+        for d in data:
+            d_data = d.split()
+            disk_dict[d_data[5]] = {
+                'file_system': d_data[0],
+                'size': d_data[1],
+                'used': d_data[2],
+                'available': d_data[3],
+                'use%': d_data[4],
+                'mount_on': d_data[5]
+            }
+
+        home_disk = os.popen("df -hT ~ | " + "grep -v Filesystem | " + "awk '{print $1, $2, $3, $4, $5, $6, $7}'")
+        home_data = home_disk.read().strip()
+        home_disk.close()
+
+        home_data = home_data.split()
+        disk_dict[home_data[0]] = {
+            'file_system': home_data[0] + ' ({0})'.format(home_data[1]),
+            'size': home_data[2],
+            'used': home_data[3],
+            'available': home_data[4],
+            'use%': home_data[5],
+            'mount_on': home_data[6],
+        }
+
+        data = disk_dict
+
+    except Exception as err:
+        data = str(err)
+
+    return JsonResponse(data, safe=True)
