@@ -159,9 +159,31 @@ def get_traffic(args):
         traffic_in = int(data[0])
         traffic_out = int(data[1])
 
-        all_traffic = {'traffic_in': traffic_in/1048576, 'traffic_out': traffic_out/1048576}
+        all_traffic = {'traffic_in': traffic_in / 1048576, 'traffic_out': traffic_out / 1048576}
 
         data = all_traffic
+
+    except Exception as err:
+        data = str(err)
+
+    return JsonResponse(data, safe=True)
+
+
+def get_current_users(args):
+    """
+    Get all current logged in users
+    """
+    try:
+        user = os.popen("who |" + "awk '{print $1}'")
+        data = user.read().strip().split('\n')
+        user.close()
+
+        if not data:
+            data = {"user": "No user"}
+        else:
+            data = {
+                "user": data[0]
+            }
 
     except Exception as err:
         data = str(err)

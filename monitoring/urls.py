@@ -1,6 +1,7 @@
 from django.urls import path, include
 
-from monitoring.mixin import get_main_memory_swap_memory, get_network_information, get_uptime, get_traffic
+from monitoring.mixin import get_main_memory_swap_memory, get_network_information, get_uptime, get_traffic, \
+    get_current_users
 from monitoring.views import DashboardView
 
 monitoring_patterns = (
@@ -9,6 +10,7 @@ monitoring_patterns = (
         path('network/', get_network_information, name='network'),
         path('uptime/', get_uptime, name='uptime'),
         path('traffic/', get_traffic, name='traffic'),
+        path('current-user/', get_current_users, name='current-user'),
     ],
     'monitoring'
 )

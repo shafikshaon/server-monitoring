@@ -64,5 +64,10 @@ $(function () {
     $.get(traffic_url, function (data) {
         populateData(data, '#traffic');
     }, "json");
+
+    let current_user_url = '/get-monitoring-data/current-user/';
+    $.get(current_user_url, function (data) {
+        populateData(data, '#current_user');
+    }, "json");
 });
 
